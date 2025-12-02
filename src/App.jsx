@@ -15,16 +15,16 @@ function MyForm() {
 
   return (
     <div className="mx-auto mt-10 max-w-lg px-4">
-      <div class Name="relative">
-        <div className="absolute inset-0 translate-x-2 translate-y-2 rounded-xl bg-black" />
+      <div className="relative inline-block">
+        <div className="absolute inset-0 translate-x-[8px] translate-y-[8px] bg-black" />
         
         <form
           onSubmit={handleSubmit}
-          className="relative rounded-xl border border-gray-300 bg-[#f8f4f4] p-6 shadow-md"
+          className=" relative border border-black bg-[#e3dede] p-6"
         >
           <label
             htmlFor="message"
-            className="block text-sm font-semibold text-gray-800"
+            className="block text-sm font-semibold text-black"
           >
             What is making you happy right now?
           </label>
@@ -39,7 +39,9 @@ function MyForm() {
 
           <button
             type="submit"
-            className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-[#ffb4b4] px-4 py-3 text-sm font-semibold text-[#5b1a1a] shadow-sm hover:bg-[#ffa0a0] transition"
+            onClick={handleSubmit}
+            value="Submit"
+            className="mt-5 flex w-58 items-left justify-left gap-2 rounded-full bg-[#f28c8c] px-4 py-3 text-sm font-semibold text-black shadow-sm hover:bg-[#ffa0a0] transition"
           >
             💖 Send A Happy Thought 💖
           </button>
