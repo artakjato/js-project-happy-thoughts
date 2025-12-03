@@ -1,8 +1,10 @@
 import { useState } from "react";
-// import { createRoot } from "react-dom/client";
+import MessageCard from "./MessageCard.jsx";
+
 
 function MyForm() {
   const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
 
   function handleChange(e) {
     setMessage(e.target.value);
@@ -10,10 +12,20 @@ function MyForm() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.loge(message);
-  }
+  
+  const trimmed = message.trim();
+  if (!trimmed) return;
 
+  const newMessage = {
+    text: trimmed
+  };
+
+  setMessages((prevMessage) => [...prevMessage, newMessage]);
+  setMessage("");
+}
+  
   return (
+    <>
     <section
       className="mt-10 flex justify-center px-4 sm:px-6 lg:px-8"
       aria-label="Form for sharing what is making you happy right now">
@@ -59,6 +71,16 @@ function MyForm() {
         </form>
       </div>
     </section>
+
+      {/*Message Card Section*/}
+    <section className="mt-6 flex flex-col items-center gap-4 px-4 sm:px-6 lg:px-8"
+      aria-label="List of happy thoughts">
+        
+        {messages.map((message, index) => (
+          <MessageCard key={index} text={message.text} />
+          ))}
+    </section>
+    </>
   );
 }
 
