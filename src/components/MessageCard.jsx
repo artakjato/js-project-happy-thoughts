@@ -1,4 +1,5 @@
 import LikeButton from "./LikeButton";
+import Timestamp from "./TimeStamp";
 
 function MessageCard ({ text }) {
   return (
@@ -10,7 +11,10 @@ function MessageCard ({ text }) {
 
     <article className="relative z-[1] w-full border border-black h-36 bg-white px-4 py-4 sm:py-5 sm:px-6">
       <p className="text-sm text-black">{text}</p>
+    <div className="flex items-center justify-between mt-4">
     <LikeButton />
+    <Timestamp />
+    </div>
     </article>
     </div>
   );
