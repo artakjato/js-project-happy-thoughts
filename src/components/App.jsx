@@ -1,10 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MessageCard from "./MessageCard.jsx";
-
+const API_URL = "https://happy-thoughts-api-4ful.onrender.com/thoughts?";
 
 function MyForm() {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
+  const [loading, setLoadding] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const response = await fetch(API_URL);
+        if (!response.ok) throw new Error("Failed to fetch messages");
+        const data = await response.json();
+        setMessages(data);
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+    fetchMessages();
+  });
 
   function handleChange(e) {
     setMessage(e.target.value);
@@ -17,11 +33,26 @@ function MyForm() {
     if (!trimmed) return;
 
     const newMessage = {
-      text: trimmed,
+      message: trimmed,
     };
 
-    setMessages((prevMessage) => [...prevMessage, newMessage]);
-    setMessage("");
+    const postMessage = async () => {
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newMessage),
+        });
+        if (!response.ok) throw new Error("Failed to post message");
+        const data = await response.json();
+        setMessages((prevMessages) => [...prevMessages, data]);
+        setMessage("");
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+
+    postMessage();
   }
 
   return (
@@ -79,7 +110,12 @@ function MyForm() {
         aria-label="List of happy thoughts"
       >
         {messages.map((message, index) => (
-          <MessageCard key={index} text={message.text} />
+          <MessageCard
+            key={index}
+            message={message.message}
+            hearts={message.hearts}
+            createdAt={message.createdAt}
+          />
         ))}
       </section>
     </>
