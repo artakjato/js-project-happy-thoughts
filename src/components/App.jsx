@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import MessageCard from "./MessageCard.jsx";
-const API_URL = "https://happy-thoughts-api-4ful.onrender.com/thoughts?";
+const API_URL = "https://happy-thoughts-api-4ful.onrender.com/thoughts";
 
 function MyForm() {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const [loading, setLoadding] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -14,13 +14,20 @@ function MyForm() {
         const response = await fetch(API_URL);
         if (!response.ok) throw new Error("Failed to fetch messages");
         const data = await response.json();
-        setMessages(data);
+        data.forEach((thought) => {
+          let likedThought = localStorage.getItem(`liked_${thought._id}`);
+          if (likedThought) {
+            thought.isLiked = true;
+          }
+          setMessages(data);
+          console.log(data)
+        });
       } catch (error) {
         setError(error.message);
       }
     };
     fetchMessages();
-  });
+  }, []);
 
   function handleChange(e) {
     setMessage(e.target.value);
@@ -53,6 +60,31 @@ function MyForm() {
     };
 
     postMessage();
+  }
+
+  function handleLike(id) {
+    const postLike = async () => {
+      try {
+        const response = await fetch(
+          `https://happy-thoughts-api-4ful.onrender.com/thoughts/${id}/like`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        if (!response.ok) throw new Error("Failed to post like");
+        const data = await response.json();
+        setMessages((prevMessages) =>
+          prevMessages.map((message) =>
+            message._id === id ? { ...message, hearts: data.hearts } : message
+          )
+        );
+        localStorage.setItem(`liked_${id}`, `${id}`);
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+    postLike();
   }
 
   return (
@@ -115,6 +147,8 @@ function MyForm() {
             message={message.message}
             hearts={message.hearts}
             createdAt={message.createdAt}
+            isLiked={message.isLiked}
+            onLike={() => handleLike(message._id)}
           />
         ))}
       </section>
