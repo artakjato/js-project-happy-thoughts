@@ -20,10 +20,11 @@ function MyForm() {
             thought.isLiked = true;
           }
           setMessages(data);
-          console.log(data)
         });
+        setLoading(false);
       } catch (error) {
         setError(error.message);
+        setLoading(false);
       }
     };
     fetchMessages();
@@ -52,7 +53,7 @@ function MyForm() {
         });
         if (!response.ok) throw new Error("Failed to post message");
         const data = await response.json();
-        setMessages((prevMessages) => [...prevMessages, data]);
+        setMessages((prevMessages) => [data, ...prevMessages]);
         setMessage("");
       } catch (error) {
         setError(error.message);
@@ -65,18 +66,17 @@ function MyForm() {
   function handleLike(id) {
     const postLike = async () => {
       try {
-        const response = await fetch(
-          `https://happy-thoughts-api-4ful.onrender.com/thoughts/${id}/like`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-          }
-        );
+        const response = await fetch(`${API_URL}/${id}/like`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
         if (!response.ok) throw new Error("Failed to post like");
         const data = await response.json();
         setMessages((prevMessages) =>
           prevMessages.map((message) =>
-            message._id === id ? { ...message, hearts: data.hearts } : message
+            message._id === id
+              ? { ...message, hearts: data.hearts, isLiked: true }
+              : message
           )
         );
         localStorage.setItem(`liked_${id}`, `${id}`);
@@ -88,9 +88,13 @@ function MyForm() {
   }
 
   return (
-    <>
+    <main
+      role="main"
+      className="min-h-screen flex flex-col items-center bg-[#fdf5f5]"
+      aria-label="Happy thoughts application"
+      >
       <section
-        className="mt-10 flex justify-center px-4 sm:px-6 lg:px-8"
+        className="mt-10 flex justify-center px-4 sm:px-6 lg:px-8 w-full"
         aria-label="Form for sharing what is making you happy right now"
       >
         <div className="relative w-full max-w-2xl">
@@ -103,6 +107,10 @@ function MyForm() {
             onSubmit={handleSubmit}
             className="relative border border-black bg-[#e3dede] px-4 py-4 sm:px-6 sm:py-5"
           >
+            <h1 className="text-lg font-bold text-black mb-2">
+              Share a happy thought
+              </h1>
+
             <label
               htmlFor="message"
               className="block text-sm font-semibold text-black"
@@ -118,8 +126,16 @@ function MyForm() {
               value={message}
               onChange={handleChange}
               aria-describedby="message-help"
+              aria-invalid={message.trim().length === 0 ? "true" : "false"}
               className="mt-3 block h-24 w-full rounded-sm border border-gray-300 bg-white p-3 text-sm text=gray-900 focus:border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-300"
             />
+
+            <p
+            id="message-help"
+            className="mt-2 text-xs text-gray-600"
+            >
+              Write a short message about what makes you happy. This field cannot be empty
+            </p>
 
             <button
               type="submit"
@@ -141,6 +157,18 @@ function MyForm() {
         className="mt-6 flex flex-col items-center h-30 gap-4 px-4 sm:px-6 lg:px-8"
         aria-label="List of happy thoughts"
       >
+        {loading && (
+          <p className="text-sm text-gray-600" role="status">
+            Loading happy thoughts...
+          </p>
+        )}
+
+        {error && (
+          <p className="text-sm text-red-600" role="alert">
+            {error}
+          </p>
+        )}
+
         {messages.map((message, index) => (
           <MessageCard
             key={index}
@@ -152,7 +180,7 @@ function MyForm() {
           />
         ))}
       </section>
-    </>
+    </main>
   );
 }
 

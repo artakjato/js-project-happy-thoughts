@@ -11,5 +11,9 @@ export default function Timestamp({ createdAt }) {
     return `${minutes} minutes ago`;
   }
 
-  return <span className="text-gray-400 text-sm">{formatTimeAgo()}</span>;
+  return (
+    <time dateTime={createdAt} className="text-gray-400 text-sm">
+      {formatTimeAgo()}
+    </time>
+  );
 }
