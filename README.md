@@ -1,26 +1,29 @@
-Happy Thoughts 
+# Happy Thoughts 💖
 
-This is a small React project where users can write “happy thoughts,” like posts, and see when each message was created.
-Users can write a message and post it.
-The message appears instantly in a card.
+A small React app where users can post short “happy thoughts” and send hearts to each other.  
+The app talks to a public API and shows a live feed of messages.
 
-❤️ Like a message
 
-Every card has a like button that switches between a filled and empty heart.
-The like count increases or decreases depending on the user's action.
+Features
 
-⏱ Timestamp
+✅ Fetches happy thoughts from a remote API
+✅ Shows a list of thoughts with:
+  The message text
+  Number of hearts (likes)
+  A “time ago” timestamp (e.g. “5 minutes ago”)
+✅ Form to submit a new happy thought
+✅ Like button for each thought:
+  Sends a POST request to the API
+  Updates the heart count in the UI
+  Stores liked thoughts in localStorage so the like state persists
+✅ Layout works on mobile, tablet, and desktop
 
-Each message shows how long ago it was posted (e.g. “20 sec ago”).
 
-*  Technologies used
+Tech Stack
 
-React
-
-Vite
-
+React (functional components + hooks)
 JavaScript (ES6+)
-
-Tailwind utility classes (flex, spacing, alignment)
-
-useState / useEffect
+Tailwind CSS for styling
+Fetch API for HTTP requests
+localStorage to remember liked thoughts
+Backend API: https://happy-thoughts-api-4ful.onrender.com/thoughts
