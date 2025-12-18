@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
-:root {
+html, body, #root {
+  height: 100%
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
+
+body {
+background: #fdf5f5;
+}
+
