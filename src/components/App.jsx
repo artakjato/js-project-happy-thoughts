@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import MessageCard from "./MessageCard.jsx";
 import ThoughtForm from "./ThoughtForm.jsx";
-const API_URL = "https://happy-thoughts-api-4ful.onrender.com/thoughts";
+//const API_URL = "https://happy-thoughts-api-4ful.onrender.com/thoughts";
+const API_URL = "https://happy-thoughts-api-8dht.onrender.com/api/thoughts";
 
 function MyForm() {
   const [message, setMessage] = useState("");
