@@ -78,8 +78,8 @@ function MyForm() {
           prevMessages.map((message) =>
             message._id === id
               ? { ...message, hearts: data.hearts, isLiked: true }
-              : message
-          )
+              : message,
+          ),
         );
         localStorage.setItem(`liked_${id}`, `${id}`);
       } catch (error) {
@@ -87,6 +87,45 @@ function MyForm() {
       }
     };
     postLike();
+  }
+
+  function handleDelete(id) {
+    const deleteMessage = async () => {
+      try {
+        const response = await fetch(`${API_URL}/${id}`, {
+          method: "DELETE",
+        });
+        if (!response.ok) throw new Error("Failed to delete message");
+        setMessages((prev) => prev.filter((m) => m._id !== id));
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+    deleteMessage();
+  }
+
+  function handleEdit(id) {
+    const messageObj = messages.find((m) => m._id === id);
+    const newText = window.prompt("Edit thought", messageObj?.message || "");
+    if (!newText) return;
+
+    const patchMessage = async () => {
+      try {
+        const response = await fetch(`${API_URL}/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: newText }),
+        });
+        if (!response.ok) throw new Error("Failed to update message");
+        const data = await response.json();
+        setMessages((prev) =>
+          prev.map((m) => (m._id === id ? { ...m, message: data.message } : m)),
+        );
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+    patchMessage();
   }
 
   return (
@@ -117,14 +156,17 @@ function MyForm() {
           </p>
         )}
 
-        {messages.map((message, index) => (
+        {messages.map((message) => (
           <MessageCard
-            key={index}
+            key={message._id}
+            id={message._id}
             message={message.message}
             hearts={message.hearts}
             createdAt={message.createdAt}
             isLiked={message.isLiked}
             onLike={() => handleLike(message._id)}
+            onDelete={() => handleDelete(message._id)}
+            onEdit={() => handleEdit(message._id)}
           />
         ))}
       </section>
