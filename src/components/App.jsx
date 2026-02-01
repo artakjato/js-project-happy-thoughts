@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import MessageCard from "./MessageCard.jsx";
 import ThoughtForm from "./ThoughtForm.jsx";
 //const API_URL = "https://happy-thoughts-api-4ful.onrender.com/thoughts";
@@ -16,13 +16,12 @@ function MyForm() {
         const response = await fetch(API_URL);
         if (!response.ok) throw new Error("Failed to fetch messages");
         const data = await response.json();
-        data.forEach((thought) => {
-          let likedThought = localStorage.getItem(`liked_${thought._id}`);
-          if (likedThought) {
-            thought.isLiked = true;
-          }
-          setMessages(data);
-        });
+        const withLikeState = data.map((thought) => ({
+          ...thought,
+          isLiked: Boolean(localStorage.getItem(`liked_${thought._id}`)),
+        }));
+
+        setMessages(withLikeState);
         setLoading(false);
       } catch (error) {
         setError(error.message);
@@ -66,6 +65,18 @@ function MyForm() {
   }
 
   function handleLike(id) {
+    setMessages((prevMessages) =>
+      prevMessages.map((message) =>
+        message._id === id
+          ? {
+              ...message,
+              hearts: (message.hearts ?? 0) + 1,
+              isLiked: true,
+            }
+          : message,
+      ),
+    );
+    localStorage.setItem(`liked_${id}`, `${id}`);
     const postLike = async () => {
       try {
         const response = await fetch(`${API_URL}/${id}/like`, {
@@ -73,19 +84,23 @@ function MyForm() {
           headers: { "Content-Type": "application/json" },
         });
         if (!response.ok) throw new Error("Failed to post like");
-        const data = await response.json();
+      } catch (error) {
         setMessages((prevMessages) =>
           prevMessages.map((message) =>
             message._id === id
-              ? { ...message, hearts: data.hearts, isLiked: true }
+              ? {
+                  ...message,
+                  hearts: Math.max((message.hearts ?? 1) - 1, 0),
+                  isLiked: false,
+                }
               : message,
           ),
         );
-        localStorage.setItem(`liked_${id}`, `${id}`);
-      } catch (error) {
+        localStorage.removeItem(`liked_${id}`);
         setError(error.message);
       }
     };
+
     postLike();
   }
 

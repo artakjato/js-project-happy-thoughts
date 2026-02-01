@@ -61,28 +61,6 @@ function MessageCard({
           </svg>
         </button>
 
-        <button
-          type="button"
-          onClick={onEdit}
-          className="absolute top-3 right-3 inline-flex items-center justify-center w-8 h-8 rounded-full text-gray-500 hover:text-red-600 hover:bg-red-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 transition"
-          aria-label="Edit thought"
-          title="Edit"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-4 h-4"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              fillRule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </button>
-
         <div className="flex flex-wrap items-center justify-between gap-2 mt-4">
           <LikeButton hearts={hearts} onLike={onLike} isLiked={isLiked} />
           <Timestamp createdAt={createdAt} />
