@@ -40,8 +40,14 @@ export default function LoginForm({ onLogin }) {
         throw new Error("Login succeeded but no token was returned.");
       }
 
+      const userId = data?.response?.id;
+      if (!userId) {
+        throw new Error("Login succeeded but no user ID was returned.");
+      }
+
       localStorage.setItem("accessToken", token);
       localStorage.setItem("email", data?.response?.email || normalizedEmail);
+      localStorage.setItem("userId", userId);
 
       onLogin?.(); // tell App to re-render as logged in
       setEmail("");

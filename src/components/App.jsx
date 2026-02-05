@@ -23,6 +23,7 @@ function MyForm() {
 const handleLogout = () => {
   localStorage.removeItem("accessToken");
   localStorage.removeItem("email");
+  localStorage.removeItem("userId");
   setLoggedIn(false);
 };
 
