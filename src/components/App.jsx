@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import MessageCard from "./MessageCard.jsx";
 import ThoughtForm from "./ThoughtForm.jsx";
-import LoginForm from "./LoginForm.jsx";
-import SignupForm from "./SignupForm.jsx";
+import AutoForm from "./AutoForm.jsx";
 
 
 const API_URL = "https://happy-thoughts-api-8dht.onrender.com/api/thoughts";
@@ -19,6 +18,7 @@ function MyForm() {
   const [error, setError] = useState(null);
 
   const [ isLoggedIn, setLoggedIn]  = useState(Boolean(localStorage.getItem("accessToken")));
+  const loggedInUserId = localStorage.getItem("userId");
 
   const handleLoggedIn = () => setLoggedIn(true);
 
@@ -191,8 +191,8 @@ const handleLogout = () => {
 
   {!isLoggedIn && (
   <>
-    <LoginForm onLogin={handleLoggedIn} />
-    <SignupForm onSignup={handleLoggedIn} />
+    <AutoForm mode="signup" onSignup={handleLoggedIn} />
+    <AutoForm mode="login" onLogin={handleLoggedIn} />  
   </>
 )}
 
@@ -245,8 +245,8 @@ const handleLogout = () => {
             onLike={() => handleLike(message._id)}
             onDelete={() => handleDelete(message._id)}
             onEdit={() => handleEdit(message._id)}
-            canEdit={isLoggedIn}
-            canDelete={isLoggedIn}
+            canEdit={isLoggedIn && message.userId === loggedInUserId}
+            canDelete={isLoggedIn && message.userId === loggedInUserId}
           />
         ))}
       </section>
