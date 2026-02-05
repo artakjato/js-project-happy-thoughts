@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import MessageCard from "./MessageCard.jsx";
 import ThoughtForm from "./ThoughtForm.jsx";
 import LoginForm from "./LoginForm.jsx";
+import SignupForm from "./SignupForm.jsx";
+
 
 const API_URL = "https://happy-thoughts-api-8dht.onrender.com/api/thoughts";
 
@@ -187,7 +189,12 @@ const handleLogout = () => {
       aria-label="Happy thoughts application"
     >
 
-  <LoginForm onLogin={handleLoggedIn} />
+  {!isLoggedIn && (
+  <>
+    <LoginForm onLogin={handleLoggedIn} />
+    <SignupForm onSignup={handleLoggedIn} />
+  </>
+)}
 
     {isLoggedIn && (
       <button
