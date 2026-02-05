@@ -3,13 +3,12 @@ import MessageCard from "./MessageCard.jsx";
 import ThoughtForm from "./ThoughtForm.jsx";
 import AutoForm from "./AutoForm.jsx";
 
-
 const API_URL = "https://happy-thoughts-api-8dht.onrender.com/api/thoughts";
 
 const getAuthHeader = () => {
   const token = localStorage.getItem("accessToken");
-  return token ? { Authorization: `Bearer ${token}` } : {};  
-}; 
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
 
 function MyForm() {
   const [message, setMessage] = useState("");
@@ -17,17 +16,19 @@ function MyForm() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [ isLoggedIn, setLoggedIn]  = useState(Boolean(localStorage.getItem("accessToken")));
+  const [isLoggedIn, setLoggedIn] = useState(
+    Boolean(localStorage.getItem("accessToken")),
+  );
   const loggedInUserId = localStorage.getItem("userId");
 
   const handleLoggedIn = () => setLoggedIn(true);
 
-const handleLogout = () => {
-  localStorage.removeItem("accessToken");
-  localStorage.removeItem("email");
-  localStorage.removeItem("userId");
-  setLoggedIn(false);
-};
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("email");
+    localStorage.removeItem("userId");
+    setLoggedIn(false);
+  };
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -74,13 +75,14 @@ const handleLogout = () => {
       try {
         const response = await fetch(API_URL, {
           method: "POST",
-          headers: { "Content-Type": "application/json", ...getAuthHeader()},
+          headers: { "Content-Type": "application/json", ...getAuthHeader() },
           body: JSON.stringify(newMessage),
         });
         const data = await response.json().catch(() => null);
         if (!response.ok) {
           throw new Error(
-        data?.message || data?.error ||"Failed to post message");
+            data?.message || data?.error || "Failed to post message",
+          );
         }
         setMessages((prevMessages) => [data, ...prevMessages]);
         setMessage("");
@@ -141,8 +143,10 @@ const handleLogout = () => {
           headers: { ...getAuthHeader() },
         });
         const data = await response.json().catch(() => null);
-        if (!response.ok) { 
-          throw new Error(data?.message || data?.error || "Failed to delete message");
+        if (!response.ok) {
+          throw new Error(
+            data?.message || data?.error || "Failed to delete message",
+          );
         }
         setMessages((prev) => prev.filter((m) => m._id !== id));
         setError(null);
@@ -161,15 +165,19 @@ const handleLogout = () => {
       try {
         const response = await fetch(`${API_URL}/${id}`, {
           method: "PUT",
-          headers: { 
+          headers: {
             "Content-Type": "application/json",
-            ...getAuthHeader()
+            ...getAuthHeader(),
           },
           body: JSON.stringify({ message: newText }),
         });
         const data = await response.json().catch(() => null);
-        if (!response.ok) { throw new Error(data?.error || data?.message ||"Failed to update message");}
-      
+        if (!response.ok) {
+          throw new Error(
+            data?.error || data?.message || "Failed to update message",
+          );
+        }
+
         setMessages((prev) =>
           prev.map((m) => (m._id === id ? { ...m, message: data.message } : m)),
         );
@@ -177,7 +185,7 @@ const handleLogout = () => {
       } catch (error) {
         setError(error.message);
       }
-  };
+    };
 
     patchMessage();
   }
@@ -188,23 +196,17 @@ const handleLogout = () => {
       className="min-h-screen flex flex-col items-center bg-[#fdf5f5]"
       aria-label="Happy thoughts application"
     >
+      {!isLoggedIn && <AutoForm onAuthSuccess={handleLoggedIn} />}
 
-  {!isLoggedIn && (
-  <>
-    <AutoForm mode="signup" onSignup={handleLoggedIn} />
-    <AutoForm mode="login" onLogin={handleLoggedIn} />  
-  </>
-)}
-
-    {isLoggedIn && (
-      <button
-        type="button"
-        onClick={handleLogout}
-        className="mt-4 rounded-full border border-black bg-white px-4 py-2 text-sm"
-      >
-        Logout
-      </button>
-    )}
+      {isLoggedIn && (
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="mt-4 rounded-full border border-black bg-white px-4 py-2 text-sm"
+        >
+          Logout
+        </button>
+      )}
 
       <ThoughtForm
         message={message}
@@ -212,7 +214,7 @@ const handleLogout = () => {
         handleSubmit={handleSubmit}
       />
 
-         {!isLoggedIn && (
+      {!isLoggedIn && (
         <p className="mt-4 text-sm text-gray-700">
           You are not logged in. Posting, editing and deleting require login.
         </p>

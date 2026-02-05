@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const USERS_URL = "https://happy-thoughts-api-8dht.onrender.com/api/users";
 
-export default function AuthForm({ onAuthSuccess }) {
+export default function AutoForm({ onAuthSuccess }) {
   const [mode, setMode] = useState("login"); // "login" | "signup"
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -49,7 +49,7 @@ export default function AuthForm({ onAuthSuccess }) {
             data?.message ||
             (isSignup
               ? "Oh nooo...signup failed. Email may already be in use."
-              : "Oh noooo...login failed. Check your email and password.")
+              : "Oh noooo...login failed. Check your email and password."),
         );
       }
 
@@ -58,7 +58,7 @@ export default function AuthForm({ onAuthSuccess }) {
 
       if (!token || !userId) {
         throw new Error(
-          `${isSignup ? "Signup" : "Login"} succeeded but token or user ID is missing.`
+          `${isSignup ? "Signup" : "Login"} succeeded but token or user ID is missing.`,
         );
       }
 
@@ -66,7 +66,11 @@ export default function AuthForm({ onAuthSuccess }) {
       localStorage.setItem("email", data?.response?.email || normalizedEmail);
       localStorage.setItem("userId", userId);
 
-      setSuccess(isSignup ? "Account created successfully! You are now logged in." : "Logged in!");
+      setSuccess(
+        isSignup
+          ? "Account created successfully! You are now logged in."
+          : "Logged in!",
+      );
       setEmail("");
       setPassword("");
 
@@ -87,7 +91,10 @@ export default function AuthForm({ onAuthSuccess }) {
 
         <form onSubmit={handleSubmit} className="mt-3 space-y-3">
           <div>
-            <label className="block text-sm font-semibold text-black" htmlFor="auth-email">
+            <label
+              className="block text-sm font-semibold text-black"
+              htmlFor="auth-email"
+            >
               Email
             </label>
             <input
@@ -101,7 +108,10 @@ export default function AuthForm({ onAuthSuccess }) {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-black" htmlFor="auth-password">
+            <label
+              className="block text-sm font-semibold text-black"
+              htmlFor="auth-password"
+            >
               Password
             </label>
             <input
@@ -127,8 +137,8 @@ export default function AuthForm({ onAuthSuccess }) {
                 ? "Signing up..."
                 : "Logging in..."
               : isSignup
-              ? "Sign Up"
-              : "Login"}
+                ? "Sign Up"
+                : "Login"}
           </button>
         </form>
 
@@ -155,7 +165,7 @@ export default function AuthForm({ onAuthSuccess }) {
               }}
               className="underline"
             >
-             Do you need an account? Sign up here
+              Do you need an account? Sign up here
             </button>
           )}
         </div>
